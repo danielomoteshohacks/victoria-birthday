@@ -1,0 +1,310 @@
+/* ============ tokens ============ */
+:root{
+  --night-deep:#140D22;
+  --night:#26193F;
+  --night-glow:#3B2555;
+  --ember:#E8A363;
+  --ember-soft:#F6C98D;
+  --ember-dim:#B97A46;
+  --parchment:#F3E6CE;
+  --parchment-deep:#E7D2A6;
+  --ink:#2E1D12;
+  --ink-soft:#6B5136;
+  --text-light:#F5EAD9;
+  --serif-display:'Fraunces', serif;
+  --serif-text:'Newsreader', serif;
+  --ease-soft: cubic-bezier(.22,.61,.36,1);
+}
+
+*{box-sizing:border-box;}
+html,body{
+  margin:0; padding:0; height:100%;
+  background:var(--night-deep);
+  overflow-x:hidden;
+}
+body{
+  font-family:var(--serif-text);
+  -webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:focus-visible{ outline:2px solid var(--ember-soft); outline-offset:3px; }
+
+/* subtle paper/air grain, pure CSS, no image asset */
+.grain{
+  position:fixed; inset:0; pointer-events:none; z-index:50; opacity:.05; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* ============ screens ============ */
+.screen{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:opacity 1.4s var(--ease-soft);
+}
+.screen.is-active{ opacity:1; visibility:visible; pointer-events:auto; }
+
+/* ============ threshold ============ */
+#threshold{
+  background:
+    radial-gradient(ellipse at 50% 78%, var(--night-glow) 0%, transparent 60%),
+    linear-gradient(180deg, var(--night-deep) 0%, var(--night) 100%);
+}
+.threshold-inner{
+  text-align:center; color:var(--text-light);
+  padding:2rem; max-width:26rem;
+}
+.eyebrow{
+  font-family:var(--serif-display);
+  font-optical-sizing:auto;
+  font-weight:400; font-style:italic;
+  font-size:1.05rem;
+  letter-spacing:.02em;
+  color:var(--ember-soft);
+  margin:0 0 1.75rem;
+  opacity:.9;
+}
+.candle-btn{
+  background:none; border:none; padding:.5rem; cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.candle-svg{ width:min(46vw,150px); height:auto; overflow:visible; }
+.candle-base-glow{ fill:var(--ember); opacity:.06; filter:blur(6px); }
+.candle-wax{ fill:var(--parchment-deep); opacity:.85; }
+.candle-wax-rim{ fill:var(--parchment); opacity:.9; }
+.candle-wick{ stroke:#3A2A1C; stroke-width:2.5; stroke-linecap:round; }
+
+.flame{ opacity:0; transform-origin:center bottom; transition:opacity .5s ease; }
+.flame-glow{ fill:var(--ember); opacity:.35; filter:blur(10px); }
+.flame-outer{ fill:var(--ember); }
+.flame-inner{ fill:var(--ember-soft); }
+
+.candle-btn.is-lit .flame{
+  opacity:1;
+  animation:flicker 2.6s ease-in-out infinite;
+}
+.candle-btn.is-lit .candle-base-glow{ opacity:.18; }
+
+@keyframes flicker{
+  0%,100%{ transform:scale(1) rotate(0deg); }
+  20%{ transform:scale(1.05,.96) rotate(-1.5deg); }
+  45%{ transform:scale(.95,1.06) rotate(1deg); }
+  65%{ transform:scale(1.03,.98) rotate(-.5deg); }
+  85%{ transform:scale(.98,1.03) rotate(1.5deg); }
+}
+
+.instruction{
+  margin-top:1.9rem; line-height:1.7; font-size:1rem;
+  color:var(--text-light); opacity:.75; font-style:italic;
+}
+
+/* drifting ember particles on threshold */
+.drift{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.drift span{
+  position:absolute; bottom:-5%; border-radius:50%;
+  animation:rise linear infinite;
+}
+.drift--embers span{
+  width:3px; height:3px; background:var(--ember);
+  box-shadow:0 0 6px 1px var(--ember-soft);
+  opacity:.5;
+}
+.drift--motes span{
+  width:4px; height:4px; background:var(--parchment);
+  box-shadow:0 0 5px 1px rgba(232,163,99,.35);
+  opacity:.4;
+}
+@keyframes rise{
+  0%{ transform:translateY(0) translateX(0); opacity:0; }
+  10%{ opacity:.6; }
+  90%{ opacity:.3; }
+  100%{ transform:translateY(-110vh) translateX(var(--drift-x,20px)); opacity:0; }
+}
+
+/* ============ letter ============ */
+#letter{
+  background:
+    radial-gradient(ellipse at 50% 0%, var(--parchment-deep) 0%, transparent 55%),
+    var(--parchment);
+  align-items:flex-start;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.letter-sheet{
+  width:100%; max-width:34rem; margin:0 auto;
+  padding:4.5rem 1.6rem 6rem;
+  color:var(--ink);
+}
+.letter-kicker{
+  font-family:var(--serif-display);
+  font-style:italic; font-weight:400;
+  color:var(--ember-dim);
+  margin:0 0 .3rem;
+  font-size:1rem;
+}
+.letter-name{
+  font-family:var(--serif-display);
+  font-optical-sizing:auto;
+  font-weight:500;
+  font-size:clamp(2.6rem,10vw,3.6rem);
+  margin:0 0 2.2rem;
+  color:var(--ink);
+  line-height:1;
+}
+.letter-body{ font-size:1.08rem; line-height:1.85; max-width:38em; }
+.letter-body p{ margin:0 0 1.5em; }
+
+.verse{
+  margin:2.4em 0 2.6em;
+  padding:1.6em 0;
+  border-top:1px solid var(--ink-soft);
+  border-bottom:1px solid var(--ink-soft);
+  font-family:var(--serif-display);
+  font-style:italic;
+  font-weight:400;
+  font-size:1.28rem;
+  line-height:1.6;
+  color:var(--ink);
+}
+.verse p{ margin:0 0 .7em; }
+.verse cite{
+  display:block; font-style:normal;
+  font-size:.85rem; letter-spacing:.03em;
+  color:var(--ember-dim);
+}
+
+.personal-note{
+  margin:2em 0;
+  padding:1.1em 1.2em;
+  border-left:2px solid var(--ember);
+  background:rgba(232,163,99,.08);
+}
+.placeholder{
+  margin:0; font-style:italic; color:var(--ink-soft);
+}
+.signoff{ margin-top:2.4em; font-style:italic; }
+
+/* ============ audio toggle ============ */
+.audio-toggle{
+  position:fixed;
+  bottom:calc(1.4rem + env(safe-area-inset-bottom,0px));
+  right:1.4rem;
+  width:3rem; height:3rem; border-radius:50%;
+  background:var(--night-deep);
+  border:1px solid rgba(232,163,99,.4);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; z-index:40;
+  box-shadow:0 4px 18px rgba(0,0,0,.25);
+  transition:transform .3s var(--ease-soft), box-shadow .3s ease;
+}
+.audio-toggle:hover{ transform:scale(1.06); }
+.audio-icon{ width:1.15rem; height:1.15rem; }
+.flame-path{ fill:var(--ember-soft); transition:opacity .3s ease; }
+.audio-toggle[aria-pressed="false"] .flame-path{ opacity:.35; }
+.audio-toggle.is-playing{ animation:pulse-glow 2.4s ease-in-out infinite; }
+@keyframes pulse-glow{
+  0%,100%{ box-shadow:0 4px 18px rgba(0,0,0,.25), 0 0 0 0 rgba(232,163,99,.25); }
+  50%{ box-shadow:0 4px 18px rgba(0,0,0,.25), 0 0 0 8px rgba(232,163,99,0); }
+}
+
+/* ============ reduced motion ============ */
+@media (prefers-reduced-motion: reduce){
+  .candle-btn.is-lit .flame{ animation:none; }
+  .drift span{ animation:none; opacity:0; }
+  .audio-toggle.is-playing{ animation:none; }
+  .screen{ transition:opacity .3s linear; }
+}
+```[span_0](start_span)[span_0](end_span)
+
+---
+
+### `script.js`
+
+```javascript
+(function () {
+  "use strict";
+
+  const threshold   = document.getElementById("threshold");
+  const letter      = document.getElementById("letter");
+  const candleBtn   = document.getElementById("candleBtn");
+  const audio       = document.getElementById("bgAudio");
+  const audioToggle = document.getElementById("audioToggle");
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- ambient particles ---------- */
+  function scatter(container, count) {
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement("span");
+      const left = Math.random() * 100;
+      const duration = 9 + Math.random() * 10;
+      const delay = Math.random() * 12;
+      const driftX = (Math.random() * 60 - 30).toFixed(0) + "px";
+      p.style.left = left + "%";
+      p.style.animationDuration = duration + "s";
+      p.style.animationDelay = delay + "s";
+      p.style.setProperty("--drift-x", driftX);
+      container.appendChild(p);
+    }
+  }
+  if (!reduceMotion) {
+    document.querySelectorAll(".drift--embers").forEach((el) => scatter(el, 14));
+    document.querySelectorAll(".drift--motes").forEach((el) => scatter(el, 10));
+  }
+
+  /* ---------- volume fade ---------- */
+  function fadeVolume(target, ms) {
+    const start = performance.now();
+    const from = audio.volume;
+    function step(now) {
+      const t = Math.min(1, (now - start) / ms);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic, reads as a soft rise
+      audio.volume = from + (target - from) * eased;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- candle -> letter ---------- */
+  let lit = false;
+  candleBtn.addEventListener("click", () => {
+    if (lit) return;
+    lit = true;
+
+    candleBtn.classList.add("is-lit");
+    candleBtn.setAttribute("aria-label", "Candle lit");
+
+    audio.volume = 0;
+    const playPromise = audio.play();
+    if (playPromise && playPromise.catch) {
+      playPromise
+        .then(() => fadeVolume(0.75, 3200))
+        .catch(() => { /* audio file missing or blocked — the moment still works in silence */ });
+    }
+
+    window.setTimeout(() => {
+      threshold.classList.remove("is-active");
+      letter.classList.add("is-active");
+      audioToggle.hidden = false;
+      audioToggle.classList.add("is-playing");
+      window.scrollTo(0, 0);
+    }, reduceMotion ? 300 : 1500);
+  });
+
+  /* ---------- floating audio toggle ---------- */
+  audioToggle.addEventListener("click", () => {
+    if (audio.paused) {
+      audio.play().catch(() => {});
+      audioToggle.setAttribute("aria-pressed", "true");
+      audioToggle.setAttribute("aria-label", "Pause music");
+      audioToggle.classList.add("is-playing");
+    } else {
+      audio.pause();
+      audioToggle.setAttribute("aria-pressed", "false");
+      audioToggle.setAttribute("aria-label", "Play music");
+      audioToggle.classList.remove("is-playing");
+    }
+  });
+})();
+```[span_1](start_span)[span_1](end_span)
