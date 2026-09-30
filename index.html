@@ -15,8 +15,8 @@
       --space-deep: #110724;
       --gold-glow: #ffd67a;
       --gold-warm: #e6a756;
-      --glass-surface: rgba(18, 10, 32, 0.72);
-      --glass-border: rgba(255, 214, 122, 0.24);
+      --glass-surface: rgba(18, 10, 32, 0.76);
+      --glass-border: rgba(255, 214, 122, 0.28);
       --text-pure: #ffffff;
       --text-radiant: #faeedd;
       --text-soft: #ddd1c1;
@@ -40,13 +40,13 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ================= 1. REAL LIVE SCENERY BACKGROUND ================= */
+    /* Live atmospheric scenery background */
     .scenery-layer {
       position: fixed;
       inset: 0;
       z-index: 1;
       background: 
-        radial-gradient(circle at 50% 30%, rgba(20, 10, 40, 0.5) 0%, rgba(7, 3, 17, 0.94) 85%),
+        radial-gradient(circle at 50% 30%, rgba(20, 10, 40, 0.45) 0%, rgba(7, 3, 17, 0.95) 85%),
         url('https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1920&q=80') center center / cover no-repeat;
       filter: brightness(0.65) saturate(1.2);
       animation: gentleBreathe 28s ease-in-out infinite alternate;
@@ -59,7 +59,7 @@
       100% { transform: scale(1.08) translateY(-12px); filter: brightness(0.72) saturate(1.3); }
     }
 
-    /* Live starry canvas */
+    /* Stardust canvas */
     #cosmosCanvas {
       position: fixed;
       inset: 0;
@@ -69,7 +69,7 @@
       pointer-events: none;
     }
 
-    /* Drifting live balloons */
+    /* Drifting glowing balloons */
     .balloon-sky {
       position: fixed;
       inset: 0;
@@ -85,7 +85,7 @@
       animation: balloonDrift linear infinite;
       box-shadow: inset -5px -7px 16px rgba(0, 0, 0, 0.45),
                   inset 4px 6px 14px rgba(255, 255, 255, 0.6),
-                  0 0 20px rgba(255, 214, 122, 0.25);
+                  0 0 22px rgba(255, 214, 122, 0.3);
     }
 
     .balloon::after {
@@ -106,7 +106,6 @@
       100% { transform: translateY(-135vh) translateX(var(--drift-x, 35px)) rotate(var(--drift-rot, 12deg)); opacity: 0; }
     }
 
-    /* ================= 2. SCREENS SYSTEM ================= */
     .screen {
       position: relative;
       z-index: 10;
@@ -117,7 +116,7 @@
       padding: 24px;
     }
 
-    /* ================= 3. THRESHOLD ENTRANCE ================= */
+    /* Threshold entrance */
     #threshold {
       position: fixed;
       inset: 0;
@@ -234,7 +233,7 @@
       margin-top: 6px;
     }
 
-    /* ================= 4. SANCTUARY LETTER SCREEN ================= */
+    /* Sanctuary letter screen */
     #letter {
       display: none;
       opacity: 0;
@@ -255,7 +254,6 @@
       margin: 0 auto;
     }
 
-    /* Frosted glass container */
     .glass-card {
       position: relative;
       background: var(--glass-surface);
@@ -265,11 +263,11 @@
       border-radius: 32px;
       padding: clamp(26px, 6vw, 48px) clamp(20px, 5vw, 36px);
       box-shadow: 0 35px 90px rgba(0, 0, 0, 0.8),
-                  0 0 45px rgba(255, 214, 122, 0.08),
+                  0 0 45px rgba(255, 214, 122, 0.1),
                   inset 0 1px 1px rgba(255, 255, 255, 0.2);
     }
 
-    /* Live scenery vignettes: flowers & birthday cake */
+    /* Vibrant celebration photo tiles */
     .celebration-visuals {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -279,11 +277,12 @@
 
     .visual-tile {
       position: relative;
-      height: 140px;
+      height: 150px;
       border-radius: 20px;
       overflow: hidden;
-      border: 1px solid rgba(255, 214, 122, 0.3);
+      border: 1px solid rgba(255, 214, 122, 0.35);
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      background: #180d2b;
     }
 
     .visual-tile img {
@@ -307,12 +306,12 @@
       text-transform: uppercase;
       font-weight: 600;
       color: #ffffff;
-      background: rgba(14, 6, 26, 0.65);
+      background: rgba(14, 6, 26, 0.75);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      padding: 3px 9px;
+      padding: 4px 10px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     .letter-header {
@@ -340,7 +339,7 @@
       line-height: 1.15;
     }
 
-    /* Animated Typewriter Flow */
+    /* Typewriter text styling */
     .type-stream p {
       font-size: 1.05rem;
       line-height: 1.9;
@@ -370,7 +369,7 @@
       50% { opacity: 0; }
     }
 
-    /* Illuminated Scripture Capsule */
+    /* Scripture capsule */
     .verse-capsule {
       position: relative;
       margin: 34px 0;
@@ -424,7 +423,6 @@
       letter-spacing: 0.02em;
     }
 
-    /* Fast-forward/skip typing pill */
     .skip-typing-btn {
       position: absolute;
       top: 18px;
@@ -504,16 +502,9 @@
 </head>
 <body>
 
-  <!-- Real scenery live layer -->
   <div class="scenery-layer" aria-hidden="true"></div>
-
-  <!-- Real cosmic particle canvas -->
   <canvas id="cosmosCanvas"></canvas>
-
-  <!-- Procedural floating luminous balloons -->
   <div id="balloonSky" class="balloon-sky" aria-hidden="true"></div>
-
-  <!-- Audio element pointing to root audio.mp3 -->
   <audio id="bgMusic" src="audio.mp3" loop preload="auto"></audio>
 
   <!-- ================= 1. THE THRESHOLD ================= -->
@@ -550,14 +541,18 @@
       <article class="glass-card">
         <button class="skip-typing-btn" id="skipTyping" type="button">Read all</button>
 
-        <!-- Live celebration scenery: cake & flowers -->
+        <!-- Real, colorful celebration scenery visuals with fallback -->
         <div class="celebration-visuals">
           <div class="visual-tile">
-            <img src="https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80" alt="Birthday candle cake" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1558636508-e0db3814bd1d?auto=format&fit=crop&w=700&q=80" 
+                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=700&q=80';"
+                 alt="Birthday candle cake" loading="lazy">
             <span class="visual-tag">A wish for you 🎂</span>
           </div>
           <div class="visual-tile">
-            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80" alt="Soft birthday flowers" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=700&q=80" 
+                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=700&q=80';"
+                 alt="Celebration bouquet of fresh flowers" loading="lazy">
             <span class="visual-tag">For peace 🕊️</span>
           </div>
         </div>
@@ -567,7 +562,6 @@
           <h1 class="letter-recipient">Victoria</h1>
         </header>
 
-        <!-- Dynamic typewriter container -->
         <div class="type-stream" id="typeStream"></div>
 
         <footer class="letter-signature" id="letterSign" style="display: none;">
@@ -589,8 +583,7 @@
     (function () {
       "use strict";
 
-      /* ================= 1. SYNTHESIZED MECHANICAL TYPING CLICK ================= */
-      // Generates soft typewriter key strikes using Web Audio API (zero extra assets required)
+      /* Web Audio click synthesis */
       let audioCtx = null;
       function playTypeClick() {
         try {
@@ -614,7 +607,7 @@
         } catch (e) {}
       }
 
-      /* ================= 2. LIVE COSMOS CANVASES ================= */
+      /* Canvas starry stardust */
       const canvas = document.getElementById("cosmosCanvas");
       const ctx = canvas.getContext("2d");
       let w, h;
@@ -662,7 +655,7 @@
       }
       animateCanvas();
 
-      /* ================= 3. LUMINOUS DRIFTING BALLOONS ================= */
+      /* Luminous drifting balloons */
       const balloonSky = document.getElementById("balloonSky");
       const balloonGradients = [
         "radial-gradient(circle at 35% 30%, #ffd97d, #c98236)",
@@ -691,7 +684,7 @@
       }
       buildBalloons();
 
-      /* ================= 4. SMOOTH EXPONENTIAL AUDIO ENGINE ================= */
+      /* Audio volume engine */
       const audio = document.getElementById("bgMusic");
       let fadeTimer = null;
 
@@ -716,7 +709,7 @@
         }, stepTime);
       }
 
-      /* ================= 5. THE TYPEWRITER ENGINE ================= */
+      /* Typewriter data & stream */
       const letterParts = [
         { type: "p", class: "lead-sentence", text: "I know how it can feel when things don't go the way you wanted. 💭" },
         { type: "p", class: "", text: "I know how discouraging it can be when your birthday feels like every other day — or worse. You're at home when you wanted to be out. Work feels endless, no breaks, no pause. You stare outside, watching the sky ☁️, thinking about what could have been different." },
@@ -783,7 +776,6 @@
             streamContainer.appendChild(vDiv);
             vp.appendChild(cursor);
 
-            // Type verse text
             for (let char of item.text) {
               if (isTypingCancelled) return;
               vp.insertBefore(document.createTextNode(char), cursor);
@@ -817,7 +809,7 @@
         }
       }
 
-      /* ================= 6. IGNITION TRANSITION ================= */
+      /* Candle ignition */
       const threshold = document.getElementById("threshold");
       const letter = document.getElementById("letter");
       const candle = document.getElementById("candleTrigger");
@@ -831,7 +823,6 @@
 
         candle.classList.add("is-lit");
 
-        // Start music silently and fade in exponentially over 4s
         if (audio) {
           audio.volume = 0;
           const p = audio.play();
@@ -845,13 +836,11 @@
           letter.classList.add("is-visible");
           audioBar.classList.add("is-active");
           window.scrollTo({ top: 0, behavior: "smooth" });
-          
-          // Begin sequential typewriter
           setTimeout(runTypewriter, 500);
         }, 1500);
       });
 
-      /* ================= 7. FLOATING AUDIO PILL CONTROLS ================= */
+      /* Audio pill controls */
       audioBar.addEventListener("click", () => {
         if (!audio) return;
         if (audio.paused) {
