@@ -1,111 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Happy Birthday, Victoria</title>
-  <meta name="description" content="A quiet sanctuary for Victoria on her birthday.">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For Victoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Live ethereal cosmic canvas -->
-  <canvas id="cosmosCanvas"></canvas>
+<canvas id="sky"></canvas>
 
-  <!-- Procedural floating luminous balloons -->
-  <div id="balloonSky" class="balloon-sky" aria-hidden="true"></div>
+<div id="balloons" aria-hidden="true"></div>
 
-  <!-- Audio element pointing to root audio.mp3 -->
-  <audio id="bgAudio" src="audio.mp3" loop preload="auto"></audio>
+<!-- SCREEN 1: THE THRESHOLD -->
+<main id="threshold" class="screen">
+  <div class="threshold-inner">
+    <h1 class="threshold-heading">Tonight, the world can wait.</h1>
 
-  <!-- ================= 1. THE THRESHOLD ================= -->
-  <section id="threshold" class="screen is-active">
-    <div class="threshold-content">
-      <div class="sanctuary-badge">A quiet space &bull; October 1st</div>
-      
-      <p class="threshold-title">Tonight, the world can wait.</p>
-      
-      <button id="candleBtn" class="candle-btn" type="button" aria-label="Light the candle to enter">
-        <div class="candle-glow" id="candleGlow"></div>
-        <svg class="candle-svg" viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="60" cy="155" rx="36" ry="8" class="wax-base-shadow"/>
-          <rect x="42" y="70" width="36" height="85" rx="5" class="wax-pillar"/>
-          <ellipse cx="60" cy="70" rx="18" ry="5" class="wax-top"/>
-          <line x1="60" y1="70" x2="60" y2="52" class="wick"/>
-          
-          <g class="flame-group">
-            <ellipse cx="60" cy="40" rx="22" ry="26" class="flame-aura"/>
-            <path d="M60,18 C70,30 72,42 66,50 C63,54 57,54 54,50 C48,42 50,30 60,18 Z" class="flame-core-outer"/>
-            <path d="M60,28 C64,36 65,44 62,48 C61,50 59,50 58,48 C55,44 56,36 60,28 Z" class="flame-core-inner"/>
-          </g>
-        </svg>
-      </button>
-
-      <p class="threshold-sub">
-        Put on your headphones.<br>
-        Take a slow, deep breath.<br>
-        <span class="tap-hint">Tap the candle to light your night.</span>
-      </p>
-    </div>
-  </section>
-
-  <!-- ================= 2. THE SANCTUARY LETTER ================= -->
-  <section id="letter" class="screen">
-    <main class="letter-scroll-wrapper">
-      <article class="glass-sheet">
-        <header class="sheet-header">
-          <span class="sheet-kicker">Held &bull; Known &bull; Remembered</span>
-          <h1 class="sheet-recipient">Victoria</h1>
-        </header>
-
-        <div class="sheet-body">
-          <p>I know how it can feel when things don't go the way you wanted. 💭</p>
-
-          <p>I know how discouraging it can be when your birthday feels like every other day &mdash; or worse. You're at home when you wanted to be out. Work feels endless, no breaks, no pause. You stare outside, watching the sky ☁️, thinking about what could have been different.</p>
-
-          <p>You wanted to cut a cake 🎂. You wanted your hair done 💇🏾‍♀️. You wanted, just once, for something to feel different. But the day gets close, and then it's here, and somehow nothing shifts. Sometimes it even feels worse than an ordinary day &mdash; because you know it's supposed to be special, and there's little or no celebration to show for it.</p>
-
-          <p>I don't know if today will be different. I don't know if these words will change much of anything.</p>
-
-          <p>But I know you can choose to be different today. You can laugh anyway 😂. You can choose peace anyway 🕊️. You can smile through it, not because everything is fine, but because you decide to. ✨</p>
-
-          <p>I hope this reaches you, Victoria, and reminds you of something true:</p>
-
-          <!-- Illuminated Scripture Capsule -->
-          <div class="verse-capsule">
-            <div class="verse-ambient-glow"></div>
-            <blockquote class="verse-quote">
-              <p>&ldquo;Can a mother forget the baby at her breast and have no compassion on the child she has borne? Though she may forget, I will not forget you! See, I have engraved you on the palms of my hands.&rdquo;</p>
-              <cite>Isaiah 49:15&ndash;16 📖</cite>
-            </blockquote>
-          </div>
-
-          <p>No matter how quiet today feels, you are not forgotten. 🤍</p>
-
-          <p class="birthday-wish">Happy birthday, Victoria. 🎉🤍</p>
-
-          <footer class="sheet-footer">
-            <p class="signoff-note">With you in this, always &mdash;</p>
-            <p class="signoff-name">Daniel</p>
-          </footer>
-        </div>
-      </article>
-    </main>
-  </section>
-
-  <!-- ================= 3. FLOATING MUSIC CONTROLLER ================= -->
-  <button id="audioToggle" class="floating-audio-bar" type="button" aria-label="Toggle audio playback" style="display: none;">
-    <div class="audio-waves" aria-hidden="true">
-      <span></span><span></span><span></span><span></span>
-    </div>
-    <span class="audio-status-text" id="audioStatus">Playing softly</span>
-  </button>
-
-  <script src="script.js"></script>
-</body>
-</html>
+    <button id="candle" aria-label="Light the candle">
+      <svg viewBox="0 0 120 200" width="90" height="150">
+        <defs>
+          <radialGradient id="haloGrad" cx="50%" cy="38%" r="60%">
+            <stop offset="0%" stop-color="#ffd98a" stop-opacity="0.85"/>
+            <stop offset="45%" stop-color="#ffb84d" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#ffb84d" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
