@@ -1,31 +1,874 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>For Victoria</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Happy Birthday, Victoria</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --space-dark: #070311;
+      --space-deep: #110724;
+      --gold-glow: #ffd67a;
+      --gold-warm: #e6a756;
+      --glass-surface: rgba(18, 10, 32, 0.72);
+      --glass-border: rgba(255, 214, 122, 0.24);
+      --text-pure: #ffffff;
+      --text-radiant: #faeedd;
+      --text-soft: #ddd1c1;
+      --text-dim: #9c8ea6;
+      
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-verse: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--space-dark);
+      color: var(--text-radiant);
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ================= 1. REAL LIVE SCENERY BACKGROUND ================= */
+    .scenery-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: 
+        radial-gradient(circle at 50% 30%, rgba(20, 10, 40, 0.5) 0%, rgba(7, 3, 17, 0.94) 85%),
+        url('https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1920&q=80') center center / cover no-repeat;
+      filter: brightness(0.65) saturate(1.2);
+      animation: gentleBreathe 28s ease-in-out infinite alternate;
+      pointer-events: none;
+      transform: scale(1.04);
+    }
+
+    @keyframes gentleBreathe {
+      0% { transform: scale(1.02) translateY(0); filter: brightness(0.62) saturate(1.15); }
+      100% { transform: scale(1.08) translateY(-12px); filter: brightness(0.72) saturate(1.3); }
+    }
+
+    /* Live starry canvas */
+    #cosmosCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Drifting live balloons */
+    .balloon-sky {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -160px;
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      animation: balloonDrift linear infinite;
+      box-shadow: inset -5px -7px 16px rgba(0, 0, 0, 0.45),
+                  inset 4px 6px 14px rgba(255, 255, 255, 0.6),
+                  0 0 20px rgba(255, 214, 122, 0.25);
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -38px;
+      left: 50%;
+      width: 1.5px;
+      height: 40px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent);
+      transform: translateX(-50%);
+    }
+
+    @keyframes balloonDrift {
+      0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+      12% { opacity: var(--balloon-op, 0.7); }
+      88% { opacity: var(--balloon-op, 0.7); }
+      100% { transform: translateY(-135vh) translateX(var(--drift-x, 35px)) rotate(var(--drift-rot, 12deg)); opacity: 0; }
+    }
+
+    /* ================= 2. SCREENS SYSTEM ================= */
+    .screen {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* ================= 3. THRESHOLD ENTRANCE ================= */
+    #threshold {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      flex-direction: column;
+      text-align: center;
+      background: radial-gradient(circle at center, rgba(17, 8, 36, 0.85) 0%, rgba(7, 3, 17, 0.98) 100%);
+      transition: opacity 1.3s var(--ease), transform 1.3s var(--ease);
+    }
+
+    #threshold.is-hidden {
+      opacity: 0;
+      transform: scale(1.06);
+      pointer-events: none;
+    }
+
+    .sanctuary-pill {
+      display: inline-block;
+      font-size: 0.76rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold-warm);
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 40px;
+      background: rgba(230, 167, 86, 0.1);
+      border: 1px solid rgba(230, 167, 86, 0.28);
+      margin-bottom: 24px;
+    }
+
+    .threshold-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 7vw, 2.7rem);
+      font-weight: 600;
+      color: var(--text-pure);
+      line-height: 1.25;
+      margin-bottom: 28px;
+    }
+
+    .candle-trigger {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      margin: 10px auto;
+      display: block;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .candle-aura {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      width: 140px;
+      height: 140px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(255, 214, 122, 0.22) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      transition: all 1.2s ease;
+    }
+
+    .candle-trigger.is-lit .candle-aura {
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(255, 214, 122, 0.48) 0%, rgba(230, 167, 86, 0.18) 50%, transparent 75%);
+    }
+
+    .candle-svg {
+      width: 110px;
+      height: auto;
+      filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.8));
+    }
+
+    .candle-wax { fill: #f3ebd8; }
+    .candle-rim { fill: #ffffff; }
+    .candle-wick { stroke: #3a2a1d; stroke-width: 3; stroke-linecap: round; }
+
+    .flame-pack {
+      opacity: 0;
+      transform-origin: 60px 48px;
+      transition: opacity 0.6s ease;
+    }
+
+    .flame-glow-circle { fill: var(--gold-glow); opacity: 0.4; filter: blur(8px); }
+    .flame-body-outer { fill: #ff9d42; }
+    .flame-body-inner { fill: #fff7e0; }
+
+    .candle-trigger.is-lit .flame-pack {
+      opacity: 1;
+      animation: flameFlicker 2.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes flameFlicker {
+      0% { transform: scale(1) rotate(-1deg); }
+      30% { transform: scale(1.08, 0.94) rotate(1.5deg); }
+      70% { transform: scale(0.95, 1.06) rotate(-1.5deg); }
+      100% { transform: scale(1.03, 0.97) rotate(0.8deg); }
+    }
+
+    .threshold-guide {
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: var(--text-dim);
+      margin-top: 26px;
+      font-weight: 300;
+    }
+
+    .threshold-guide strong {
+      color: var(--gold-glow);
+      font-weight: 500;
+      display: block;
+      margin-top: 6px;
+    }
+
+    /* ================= 4. SANCTUARY LETTER SCREEN ================= */
+    #letter {
+      display: none;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 1.3s var(--ease), transform 1.3s var(--ease);
+      padding: 40px 16px 140px;
+    }
+
+    #letter.is-visible {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .letter-center-column {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Frosted glass container */
+    .glass-card {
+      position: relative;
+      background: var(--glass-surface);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: clamp(26px, 6vw, 48px) clamp(20px, 5vw, 36px);
+      box-shadow: 0 35px 90px rgba(0, 0, 0, 0.8),
+                  0 0 45px rgba(255, 214, 122, 0.08),
+                  inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Live scenery vignettes: flowers & birthday cake */
+    .celebration-visuals {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 34px;
+    }
+
+    .visual-tile {
+      position: relative;
+      height: 140px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 214, 122, 0.3);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    .visual-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 1.2s ease;
+    }
+
+    .visual-tile:hover img {
+      transform: scale(1.08);
+    }
+
+    .visual-tag {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #ffffff;
+      background: rgba(14, 6, 26, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 3px 9px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .letter-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .letter-kicker {
+      font-size: 0.78rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold-warm);
+      font-weight: 600;
+    }
+
+    .letter-recipient {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 8.5vw, 3.6rem);
+      font-weight: 700;
+      color: var(--text-pure);
+      margin-top: 6px;
+      background: linear-gradient(135deg, #ffffff 40%, var(--gold-glow) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.15;
+    }
+
+    /* Animated Typewriter Flow */
+    .type-stream p {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--text-soft);
+      margin-bottom: 22px;
+      font-weight: 400;
+    }
+
+    .type-stream p.lead-sentence {
+      font-size: 1.15rem;
+      color: var(--text-pure);
+      font-weight: 500;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: var(--gold-glow);
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: cursorBlink 0.8s infinite;
+    }
+
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Illuminated Scripture Capsule */
+    .verse-capsule {
+      position: relative;
+      margin: 34px 0;
+      padding: 26px 22px;
+      background: linear-gradient(135deg, rgba(255, 214, 122, 0.08) 0%, rgba(200, 120, 160, 0.04) 100%);
+      border-left: 3px solid var(--gold-glow);
+      border-top: 1px solid rgba(255, 214, 122, 0.2);
+      border-right: 1px solid rgba(255, 214, 122, 0.08);
+      border-bottom: 1px solid rgba(255, 214, 122, 0.14);
+      border-radius: 0 20px 20px 0;
+    }
+
+    .verse-quote p {
+      font-family: var(--font-verse) !important;
+      font-size: 1.4rem !important;
+      font-style: italic;
+      line-height: 1.7 !important;
+      color: #fff8eb !important;
+      margin-bottom: 12px !important;
+    }
+
+    .verse-quote cite {
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-style: normal;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--gold-glow);
+    }
+
+    .final-wish {
+      font-size: 1.25rem !important;
+      font-weight: 600 !important;
+      color: var(--text-pure) !important;
+      margin-top: 28px !important;
+    }
+
+    .letter-signature {
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 214, 122, 0.16);
+      text-align: left;
+    }
+
+    .sign-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-pure);
+      letter-spacing: 0.02em;
+    }
+
+    /* Fast-forward/skip typing pill */
+    .skip-typing-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: rgba(255, 214, 122, 0.12);
+      border: 1px solid rgba(255, 214, 122, 0.3);
+      color: var(--gold-glow);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* Floating music player pill */
+    .audio-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: rgba(18, 10, 32, 0.88);
+      border: 1px solid rgba(255, 214, 122, 0.35);
+      padding: 10px 18px;
+      border-radius: 40px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .audio-pill.is-active { display: flex; }
+
+    .eq-bars {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 16px;
+    }
+
+    .eq-bars span {
+      width: 3px;
+      height: 100%;
+      background: var(--gold-glow);
+      border-radius: 3px;
+      animation: eqPulse 1.2s ease-in-out infinite alternate;
+    }
+
+    .eq-bars span:nth-child(2) { animation-delay: 0.25s; height: 65%; }
+    .eq-bars span:nth-child(3) { animation-delay: 0.45s; height: 85%; }
+    .eq-bars span:nth-child(4) { animation-delay: 0.15s; height: 45%; }
+
+    .audio-pill.is-paused .eq-bars span {
+      animation: none;
+      height: 4px;
+      opacity: 0.35;
+    }
+
+    .audio-label {
+      font-size: 0.82rem;
+      color: var(--gold-glow);
+      font-weight: 500;
+    }
+
+    @keyframes eqPulse {
+      0% { height: 20%; }
+      100% { height: 100%; }
+    }
+  </style>
 </head>
 <body>
 
-<canvas id="sky"></canvas>
+  <!-- Real scenery live layer -->
+  <div class="scenery-layer" aria-hidden="true"></div>
 
-<div id="balloons" aria-hidden="true"></div>
+  <!-- Real cosmic particle canvas -->
+  <canvas id="cosmosCanvas"></canvas>
 
-<!-- SCREEN 1: THE THRESHOLD -->
-<main id="threshold" class="screen">
-  <div class="threshold-inner">
-    <h1 class="threshold-heading">Tonight, the world can wait.</h1>
+  <!-- Procedural floating luminous balloons -->
+  <div id="balloonSky" class="balloon-sky" aria-hidden="true"></div>
 
-    <button id="candle" aria-label="Light the candle">
-      <svg viewBox="0 0 120 200" width="90" height="150">
-        <defs>
-          <radialGradient id="haloGrad" cx="50%" cy="38%" r="60%">
-            <stop offset="0%" stop-color="#ffd98a" stop-opacity="0.85"/>
-            <stop offset="45%" stop-color="#ffb84d" stop-opacity="0.35"/>
-            <stop offset="100%" stop-color="#ffb84d" stop-opacity="0"/>
-          </radialGradient>
-          <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+  <!-- Audio element pointing to root audio.mp3 -->
+  <audio id="bgMusic" src="audio.mp3" loop preload="auto"></audio>
+
+  <!-- ================= 1. THE THRESHOLD ================= -->
+  <section id="threshold" class="screen">
+    <div class="sanctuary-pill">A quiet space &bull; October 1st</div>
+    <h1 class="threshold-title">Tonight, the world can wait.</h1>
+    
+    <button class="candle-trigger" id="candleTrigger" type="button" aria-label="Light your candle to enter">
+      <div class="candle-aura"></div>
+      <svg class="candle-svg" viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="60" cy="155" rx="36" ry="8" class="candle-shadow" fill="rgba(0,0,0,0.45)"/>
+        <rect x="42" y="70" width="36" height="85" rx="5" class="candle-wax"/>
+        <ellipse cx="60" cy="70" rx="18" ry="5" class="candle-rim"/>
+        <line x1="60" y1="70" x2="60" y2="52" class="candle-wick"/>
+        
+        <g class="flame-pack">
+          <ellipse cx="60" cy="40" rx="22" ry="26" class="flame-glow-circle"/>
+          <path d="M60,18 C70,30 72,42 66,50 C63,54 57,54 54,50 C48,42 50,30 60,18 Z" class="flame-body-outer"/>
+          <path d="M60,28 C64,36 65,44 62,48 C61,50 59,50 58,48 C55,44 56,36 60,28 Z" class="flame-body-inner"/>
+        </g>
+      </svg>
+    </button>
+
+    <p class="threshold-guide">
+      Put on your headphones.<br>
+      Take a slow, deep breath.<br>
+      <strong>Tap the candle to light your night.</strong>
+    </p>
+  </section>
+
+  <!-- ================= 2. THE SANCTUARY LETTER ================= -->
+  <section id="letter" class="screen">
+    <div class="letter-center-column">
+      <article class="glass-card">
+        <button class="skip-typing-btn" id="skipTyping" type="button">Read all</button>
+
+        <!-- Live celebration scenery: cake & flowers -->
+        <div class="celebration-visuals">
+          <div class="visual-tile">
+            <img src="https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80" alt="Birthday candle cake" loading="lazy">
+            <span class="visual-tag">A wish for you 🎂</span>
+          </div>
+          <div class="visual-tile">
+            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80" alt="Soft birthday flowers" loading="lazy">
+            <span class="visual-tag">For peace 🕊️</span>
+          </div>
+        </div>
+
+        <header class="letter-header">
+          <span class="letter-kicker">Held &bull; Known &bull; Remembered</span>
+          <h1 class="letter-recipient">Victoria</h1>
+        </header>
+
+        <!-- Dynamic typewriter container -->
+        <div class="type-stream" id="typeStream"></div>
+
+        <footer class="letter-signature" id="letterSign" style="display: none;">
+          <p class="sign-name">&mdash; Daniel</p>
+        </footer>
+      </article>
+    </div>
+  </section>
+
+  <!-- Floating Audio Player Bar -->
+  <button id="audioBar" class="audio-pill" type="button" aria-label="Audio controller">
+    <div class="eq-bars" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <span class="audio-label" id="audioLabel">Playing softly</span>
+  </button>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* ================= 1. SYNTHESIZED MECHANICAL TYPING CLICK ================= */
+      // Generates soft typewriter key strikes using Web Audio API (zero extra assets required)
+      let audioCtx = null;
+      function playTypeClick() {
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+          
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(140 + Math.random() * 90, audioCtx.currentTime);
+          
+          gain.gain.setValueAtTime(0.025, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.035);
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.035);
+        } catch (e) {}
+      }
+
+      /* ================= 2. LIVE COSMOS CANVASES ================= */
+      const canvas = document.getElementById("cosmosCanvas");
+      const ctx = canvas.getContext("2d");
+      let w, h;
+      const sparks = [];
+
+      function setBounds() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", setBounds);
+      setBounds();
+
+      class Sparkle {
+        constructor() { this.reset(true); }
+        reset(initial = false) {
+          this.x = Math.random() * w;
+          this.y = initial ? Math.random() * h : h + 15;
+          this.r = Math.random() * 2 + 0.6;
+          this.vy = Math.random() * 0.45 + 0.2;
+          this.vx = (Math.random() - 0.5) * 0.3;
+          this.alpha = Math.random() * 0.65 + 0.2;
+          this.pulse = Math.random() * 0.02 + 0.005;
+        }
+        update() {
+          this.y -= this.vy;
+          this.x += this.vx;
+          this.alpha += Math.sin(Date.now() * this.pulse) * 0.006;
+          if (this.y < -20 || this.x < -20 || this.x > w + 20) this.reset();
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 214, 122, ${Math.max(0.1, Math.min(0.85, this.alpha))})`;
+          ctx.shadowBlur = 6;
+          ctx.shadowColor = "#ffd67a";
+          ctx.fill();
+        }
+      }
+      for (let i = 0; i < 48; i++) sparks.push(new Sparkle());
+
+      function animateCanvas() {
+        ctx.clearRect(0, 0, w, h);
+        sparks.forEach(s => { s.update(); s.draw(); });
+        requestAnimationFrame(animateCanvas);
+      }
+      animateCanvas();
+
+      /* ================= 3. LUMINOUS DRIFTING BALLOONS ================= */
+      const balloonSky = document.getElementById("balloonSky");
+      const balloonGradients = [
+        "radial-gradient(circle at 35% 30%, #ffd97d, #c98236)",
+        "radial-gradient(circle at 35% 30%, #f7c5cc, #a64b66)",
+        "radial-gradient(circle at 35% 30%, #d8b7ff, #623d94)",
+        "radial-gradient(circle at 35% 30%, #ffffff, #b0a190)",
+        "radial-gradient(circle at 35% 30%, #fbd5a5, #9e6435)"
+      ];
+
+      function buildBalloons() {
+        for (let i = 0; i < 8; i++) {
+          const b = document.createElement("div");
+          b.className = "balloon";
+          const width = Math.floor(Math.random() * 22 + 38);
+          b.style.width = width + "px";
+          b.style.height = Math.floor(width * 1.25) + "px";
+          b.style.left = (Math.random() * 88 + 4) + "%";
+          b.style.background = balloonGradients[i % balloonGradients.length];
+          b.style.setProperty("--balloon-op", Math.random() > 0.5 ? "0.75" : "0.5");
+          b.style.setProperty("--drift-x", (Math.random() * 60 - 30) + "px");
+          b.style.setProperty("--drift-rot", (Math.random() * 18 - 9) + "deg");
+          b.style.animationDuration = (Math.random() * 10 + 15) + "s";
+          b.style.animationDelay = (i * 2.5) + "s";
+          balloonSky.appendChild(b);
+        }
+      }
+      buildBalloons();
+
+      /* ================= 4. SMOOTH EXPONENTIAL AUDIO ENGINE ================= */
+      const audio = document.getElementById("bgMusic");
+      let fadeTimer = null;
+
+      function fadeAudio(targetVol, durationMs, onDone) {
+        if (!audio) return;
+        clearInterval(fadeTimer);
+        const startVol = audio.volume;
+        const diff = targetVol - startVol;
+        const steps = 30;
+        const stepTime = durationMs / steps;
+        let step = 0;
+
+        fadeTimer = setInterval(() => {
+          step++;
+          const progress = step / steps;
+          const eased = 1 - Math.pow(1 - progress, 3);
+          audio.volume = Math.max(0, Math.min(1, startVol + diff * eased));
+          if (step >= steps) {
+            clearInterval(fadeTimer);
+            if (onDone) onDone();
+          }
+        }, stepTime);
+      }
+
+      /* ================= 5. THE TYPEWRITER ENGINE ================= */
+      const letterParts = [
+        { type: "p", class: "lead-sentence", text: "I know how it can feel when things don't go the way you wanted. 💭" },
+        { type: "p", class: "", text: "I know how discouraging it can be when your birthday feels like every other day — or worse. You're at home when you wanted to be out. Work feels endless, no breaks, no pause. You stare outside, watching the sky ☁️, thinking about what could have been different." },
+        { type: "p", class: "", text: "You wanted to cut a cake 🎂. You wanted your hair done 💇🏾‍♀️. You wanted, just once, for something to feel different. But the day gets close, and then it's here, and somehow nothing shifts. Sometimes it even feels worse than an ordinary day — because you know it's supposed to be special, and there's little or no celebration to show for it." },
+        { type: "p", class: "", text: "I don't know if today will be different. I don't know if these words will change much of anything." },
+        { type: "p", class: "", text: "But I know you can choose to be different today. You can laugh anyway 😂. You can choose peace anyway 🕊️. You can smile through it, not because everything is fine, but because you decide to. ✨" },
+        { type: "p", class: "", text: "I hope this reaches you, Victoria, and reminds you of something true:" },
+        { 
+          type: "verse", 
+          text: "“Can a mother forget the baby at her breast and have no compassion on the child she has borne? Though she may forget, I will not forget you! See, I have engraved you on the palms of my hands.”",
+          cite: "Isaiah 49:15–16 📖" 
+        },
+        { type: "p", class: "", text: "No matter how quiet today feels, you are not forgotten. 🤍" },
+        { type: "p", class: "final-wish", text: "Happy birthday, Victoria. 🎉🤍" }
+      ];
+
+      const streamContainer = document.getElementById("typeStream");
+      const signature = document.getElementById("letterSign");
+      const skipBtn = document.getElementById("skipTyping");
+      let isTypingCancelled = false;
+
+      function renderFullLetterInstantly() {
+        isTypingCancelled = true;
+        skipBtn.style.display = "none";
+        streamContainer.innerHTML = "";
+
+        letterParts.forEach(item => {
+          if (item.type === "verse") {
+            const vDiv = document.createElement("div");
+            vDiv.className = "verse-capsule";
+            vDiv.innerHTML = `<blockquote class="verse-quote"><p>${item.text}</p><cite>${item.cite}</cite></blockquote>`;
+            streamContainer.appendChild(vDiv);
+          } else {
+            const p = document.createElement("p");
+            if (item.class) p.className = item.class;
+            p.textContent = item.text;
+            streamContainer.appendChild(p);
+          }
+        });
+        signature.style.display = "block";
+      }
+
+      skipBtn.addEventListener("click", renderFullLetterInstantly);
+
+      async function runTypewriter() {
+        const cursor = document.createElement("span");
+        cursor.className = "typing-cursor";
+
+        for (let i = 0; i < letterParts.length; i++) {
+          if (isTypingCancelled) return;
+          const item = letterParts[i];
+
+          if (item.type === "verse") {
+            const vDiv = document.createElement("div");
+            vDiv.className = "verse-capsule";
+            const bq = document.createElement("blockquote");
+            bq.className = "verse-quote";
+            const vp = document.createElement("p");
+            const cite = document.createElement("cite");
+            
+            bq.appendChild(vp);
+            bq.appendChild(cite);
+            vDiv.appendChild(bq);
+            streamContainer.appendChild(vDiv);
+            vp.appendChild(cursor);
+
+            // Type verse text
+            for (let char of item.text) {
+              if (isTypingCancelled) return;
+              vp.insertBefore(document.createTextNode(char), cursor);
+              playTypeClick();
+              await new Promise(r => setTimeout(r, 26));
+            }
+            cursor.remove();
+            cite.textContent = item.cite;
+            await new Promise(r => setTimeout(r, 450));
+          } else {
+            const p = document.createElement("p");
+            if (item.class) p.className = item.class;
+            streamContainer.appendChild(p);
+            p.appendChild(cursor);
+
+            for (let char of item.text) {
+              if (isTypingCancelled) return;
+              p.insertBefore(document.createTextNode(char), cursor);
+              playTypeClick();
+              const delay = (char === '.' || char === '!' || char === '?') ? 320 : (char === ',' ? 140 : 28);
+              await new Promise(r => setTimeout(r, delay));
+            }
+            cursor.remove();
+            await new Promise(r => setTimeout(r, 280));
+          }
+        }
+
+        if (!isTypingCancelled) {
+          signature.style.display = "block";
+          skipBtn.style.display = "none";
+        }
+      }
+
+      /* ================= 6. IGNITION TRANSITION ================= */
+      const threshold = document.getElementById("threshold");
+      const letter = document.getElementById("letter");
+      const candle = document.getElementById("candleTrigger");
+      const audioBar = document.getElementById("audioBar");
+      const audioLabel = document.getElementById("audioLabel");
+      let started = false;
+
+      candle.addEventListener("click", () => {
+        if (started) return;
+        started = true;
+
+        candle.classList.add("is-lit");
+
+        // Start music silently and fade in exponentially over 4s
+        if (audio) {
+          audio.volume = 0;
+          const p = audio.play();
+          if (p !== undefined) {
+            p.then(() => fadeAudio(0.85, 4000)).catch(() => {});
+          }
+        }
+
+        setTimeout(() => {
+          threshold.classList.add("is-hidden");
+          letter.classList.add("is-visible");
+          audioBar.classList.add("is-active");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          
+          // Begin sequential typewriter
+          setTimeout(runTypewriter, 500);
+        }, 1500);
+      });
+
+      /* ================= 7. FLOATING AUDIO PILL CONTROLS ================= */
+      audioBar.addEventListener("click", () => {
+        if (!audio) return;
+        if (audio.paused) {
+          audio.play().then(() => {
+            fadeAudio(0.85, 1200);
+            audioBar.classList.remove("is-paused");
+            audioLabel.textContent = "Playing softly";
+          }).catch(() => {});
+        } else {
+          fadeAudio(0, 1000, () => {
+            audio.pause();
+            audioBar.classList.add("is-paused");
+            audioLabel.textContent = "Music paused";
+          });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
