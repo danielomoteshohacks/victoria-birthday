@@ -1,613 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Happy Birthday, Victoria</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
-
-<style>
-  :root {
-    --bg-dark: #090514;
-    --bg-deep: #120924;
-    --gold-glow: #f7d287;
-    --gold-bright: #ffd97d;
-    --gold-warm: #d99a4e;
-    --text-pure: #ffffff;
-    --text-soft: #f1e9dc;
-    --text-muted: #c9b9a6;
-    --font-heading: 'Playfair Display', Georgia, serif;
-    --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
-    --font-verse: 'Cormorant Garamond', Georgia, serif;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Happy Birthday, Victoria</title>
+  <meta name="description" content="A quiet sanctuary for Victoria on her birthday.">
   
-  html, body {
-    width: 100%;
-    min-height: 100%;
-    background-color: var(--bg-dark);
-    color: var(--text-soft);
-    font-family: var(--font-body);
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* Live interactive starry canvas */
-  #canvas-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  /* Drifting ambient balloons layer */
-  .balloon-container {
-    position: fixed;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  .balloon {
-    position: absolute;
-    bottom: -160px;
-    width: 44px;
-    height: 56px;
-    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-    opacity: 0.7;
-    animation: driftUp linear infinite;
-    filter: drop-shadow(0 0 12px rgba(247, 210, 135, 0.25));
-  }
-
-  .balloon::after {
-    content: '';
-    position: absolute;
-    bottom: -32px;
-    left: 50%;
-    width: 1.5px;
-    height: 34px;
-    background: rgba(255, 255, 255, 0.25);
-    transform: translateX(-50%);
-  }
-
-  .balloon::before {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    width: 5px;
-    height: 4px;
-    background: inherit;
-    border-radius: 2px;
-    transform: translateX(-50%);
-  }
-
-  @keyframes driftUp {
-    0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
-    15% { opacity: 0.75; }
-    85% { opacity: 0.75; }
-    100% { transform: translateY(-125vh) rotate(12deg) translateX(45px); opacity: 0; }
-  }
-
-  /* Screen containers */
-  .screen {
-    position: relative;
-    z-index: 5;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  /* ================= THRESHOLD INTRO ================= */
-  #threshold {
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    flex-direction: column;
-    text-align: center;
-    background: radial-gradient(circle at center 60%, rgba(35, 18, 65, 0.8) 0%, rgba(9, 5, 20, 0.98) 100%);
-  }
-
-  #threshold.is-hidden {
-    opacity: 0;
-    transform: scale(1.08);
-    pointer-events: none;
-  }
-
-  .threshold-kicker {
-    font-size: 0.85rem;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--gold-warm);
-    font-weight: 500;
-    margin-bottom: 24px;
-    opacity: 0.9;
-  }
-
-  .candle-wrapper {
-    position: relative;
-    width: 140px;
-    height: 180px;
-    margin: 20px auto;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .candle-halo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 220px;
-    height: 220px;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(247, 210, 135, 0.15) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-    transition: all 0.8s ease;
-  }
-
-  .candle-body {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    width: 44px;
-    height: 84px;
-    transform: translateX(-50%);
-    background: linear-gradient(180deg, #ede2d1 0%, #caa472 100%);
-    border-radius: 6px 6px 12px 12px;
-    box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 8px 24px rgba(0,0,0,0.5);
-  }
-
-  .candle-wick {
-    position: absolute;
-    top: -16px;
-    left: 50%;
-    width: 3px;
-    height: 18px;
-    background: #423023;
-    transform: translateX(-50%);
-    border-radius: 2px;
-  }
-
-  .flame-element {
-    position: absolute;
-    top: -46px;
-    left: 50%;
-    width: 20px;
-    height: 38px;
-    transform: translateX(-50%);
-    background: radial-gradient(ellipse at bottom, #ffffff 10%, #ffd97d 45%, #ff7733 90%);
-    border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
-    opacity: 0;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    filter: drop-shadow(0 0 16px #ffb347);
-  }
-
-  .candle-wrapper.is-lit .flame-element {
-    opacity: 1;
-    animation: flickerLoop 2.4s ease-in-out infinite alternate;
-  }
-
-  .candle-wrapper.is-lit .candle-halo {
-    width: 340px;
-    height: 340px;
-    background: radial-gradient(circle, rgba(255, 196, 88, 0.38) 0%, rgba(247, 163, 99, 0.12) 45%, transparent 75%);
-  }
-
-  @keyframes flickerLoop {
-    0% { transform: translateX(-50%) scale(1) rotate(-1deg); }
-    50% { transform: translateX(-50%) scale(1.08, 0.94) rotate(1.5deg); }
-    100% { transform: translateX(-50%) scale(0.96, 1.05) rotate(-2deg); }
-  }
-
-  .threshold-instruction {
-    font-size: 1.02rem;
-    line-height: 1.8;
-    color: var(--text-muted);
-    margin-top: 24px;
-    font-weight: 300;
-  }
-
-  .threshold-instruction span {
-    color: var(--text-pure);
-    font-weight: 500;
-  }
-
-  /* ================= SANCTUARY LETTER ================= */
-  #letter {
-    display: none;
-    padding-top: 60px;
-    padding-bottom: 90px;
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  #letter.is-visible {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .sanctuary-card {
-    position: relative;
-    width: 100%;
-    max-width: 580px;
-    background: rgba(18, 11, 34, 0.72);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
-    border: 1px solid rgba(247, 210, 135, 0.22);
-    border-radius: 28px;
-    padding: 44px 28px;
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7), 0 0 35px rgba(232, 163, 99, 0.12);
-  }
-
-  .letter-tag {
-    font-size: 0.8rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--gold-warm);
-    font-weight: 600;
-    margin-bottom: 12px;
-  }
-
-  .letter-title {
-    font-family: var(--font-heading);
-    font-size: clamp(2.2rem, 8vw, 3.2rem);
-    font-weight: 700;
-    color: var(--text-pure);
-    line-height: 1.15;
-    margin-bottom: 32px;
-    background: linear-gradient(135deg, #ffffff 40%, #ffd97d 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .letter-content p {
-    font-size: 1.05rem;
-    line-height: 1.88;
-    color: var(--text-soft);
-    margin-bottom: 22px;
-    font-weight: 400;
-  }
-
-  /* Scripture highlight card */
-  .verse-card {
-    position: relative;
-    margin: 36px 0;
-    padding: 26px 22px;
-    background: linear-gradient(145deg, rgba(247, 210, 135, 0.08) 0%, rgba(255, 119, 51, 0.04) 100%);
-    border-left: 3px solid var(--gold-bright);
-    border-top: 1px solid rgba(247, 210, 135, 0.2);
-    border-right: 1px solid rgba(247, 210, 135, 0.1);
-    border-bottom: 1px solid rgba(247, 210, 135, 0.15);
-    border-radius: 0 16px 16px 0;
-  }
-
-  .verse-card p {
-    font-family: var(--font-verse);
-    font-size: 1.35rem;
-    font-style: italic;
-    line-height: 1.68;
-    color: #fff4dc;
-    margin-bottom: 12px;
-  }
-
-  .verse-card cite {
-    display: block;
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    font-style: normal;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: var(--gold-bright);
-  }
-
-  .signoff {
-    margin-top: 36px;
-    padding-top: 24px;
-    border-top: 1px solid rgba(247, 210, 135, 0.16);
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: var(--text-muted);
-  }
-
-  .signoff strong {
-    font-family: var(--font-heading);
-    font-size: 1.45rem;
-    color: var(--text-pure);
-    display: inline-block;
-    margin-top: 4px;
-    letter-spacing: 0.02em;
-  }
-
-  /* Floating Audio Controller */
-  .audio-bar {
-    position: fixed;
-    bottom: 22px;
-    right: 22px;
-    z-index: 50;
-    display: none;
-    align-items: center;
-    gap: 10px;
-    background: rgba(18, 11, 34, 0.88);
-    border: 1px solid rgba(247, 210, 135, 0.35);
-    padding: 10px 18px;
-    border-radius: 40px;
-    backdrop-filter: blur(16px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .audio-bar.is-active { display: flex; }
-
-  .audio-indicator {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    height: 14px;
-  }
-
-  .audio-indicator span {
-    width: 3px;
-    height: 100%;
-    background: var(--gold-bright);
-    border-radius: 2px;
-    animation: soundWave 1.2s ease-in-out infinite alternate;
-  }
-
-  .audio-indicator span:nth-child(2) { animation-delay: 0.2s; height: 60%; }
-  .audio-indicator span:nth-child(3) { animation-delay: 0.4s; height: 80%; }
-
-  .audio-bar.is-paused .audio-indicator span {
-    animation: none;
-    height: 4px;
-    opacity: 0.4;
-  }
-
-  .audio-label {
-    font-size: 0.82rem;
-    color: var(--gold-bright);
-    font-weight: 500;
-  }
-
-  @keyframes soundWave {
-    0% { height: 20%; }
-    100% { height: 100%; }
-  }
-</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Twinkling starlight & live motes -->
-  <canvas id="canvas-bg"></canvas>
+  <!-- Live ethereal cosmic canvas -->
+  <canvas id="cosmosCanvas"></canvas>
 
-  <!-- Floating scenery balloons -->
-  <div class="balloon-container" id="balloonGroup" aria-hidden="true"></div>
+  <!-- Procedural floating luminous balloons -->
+  <div id="balloonSky" class="balloon-sky" aria-hidden="true"></div>
 
   <!-- Audio element pointing to root audio.mp3 -->
-  <audio id="bgMusic" src="audio.mp3" loop preload="auto"></audio>
+  <audio id="bgAudio" src="audio.mp3" loop preload="auto"></audio>
 
-  <!-- ================= THRESHOLD ================= -->
-  <section id="threshold" class="screen">
-    <p class="threshold-kicker">Tonight, the world waits</p>
-    
-    <div class="candle-wrapper" id="candleTrigger" role="button" aria-label="Tap to light candle">
-      <div class="candle-halo"></div>
-      <div class="candle-body">
-        <div class="candle-wick"></div>
-        <div class="flame-element"></div>
-      </div>
+  <!-- ================= 1. THE THRESHOLD ================= -->
+  <section id="threshold" class="screen is-active">
+    <div class="threshold-content">
+      <div class="sanctuary-badge">A quiet space &bull; October 1st</div>
+      
+      <p class="threshold-title">Tonight, the world can wait.</p>
+      
+      <button id="candleBtn" class="candle-btn" type="button" aria-label="Light the candle to enter">
+        <div class="candle-glow" id="candleGlow"></div>
+        <svg class="candle-svg" viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="60" cy="155" rx="36" ry="8" class="wax-base-shadow"/>
+          <rect x="42" y="70" width="36" height="85" rx="5" class="wax-pillar"/>
+          <ellipse cx="60" cy="70" rx="18" ry="5" class="wax-top"/>
+          <line x1="60" y1="70" x2="60" y2="52" class="wick"/>
+          
+          <g class="flame-group">
+            <ellipse cx="60" cy="40" rx="22" ry="26" class="flame-aura"/>
+            <path d="M60,18 C70,30 72,42 66,50 C63,54 57,54 54,50 C48,42 50,30 60,18 Z" class="flame-core-outer"/>
+            <path d="M60,28 C64,36 65,44 62,48 C61,50 59,50 58,48 C55,44 56,36 60,28 Z" class="flame-core-inner"/>
+          </g>
+        </svg>
+      </button>
+
+      <p class="threshold-sub">
+        Put on your headphones.<br>
+        Take a slow, deep breath.<br>
+        <span class="tap-hint">Tap the candle to light your night.</span>
+      </p>
     </div>
-
-    <p class="threshold-instruction">
-      Put on your headphones.<br>
-      Take a slow, deep breath.<br>
-      <span>Tap your candle to enter.</span>
-    </p>
   </section>
 
-  <!-- ================= SANCTUARY LETTER ================= -->
+  <!-- ================= 2. THE SANCTUARY LETTER ================= -->
   <section id="letter" class="screen">
-    <article class="sanctuary-card">
-      <p class="letter-tag">A quiet space &mdash; October 1st</p>
-      <h1 class="letter-title">Victoria</h1>
+    <main class="letter-scroll-wrapper">
+      <article class="glass-sheet">
+        <header class="sheet-header">
+          <span class="sheet-kicker">Held &bull; Known &bull; Remembered</span>
+          <h1 class="sheet-recipient">Victoria</h1>
+        </header>
 
-      <div class="letter-content">
-        <p>I know how it can feel when things don't go the way you wanted. 💭</p>
+        <div class="sheet-body">
+          <p>I know how it can feel when things don't go the way you wanted. 💭</p>
 
-        <p>I know how discouraging it can be when your birthday feels like every other day — or worse. You're at home when you wanted to be out. Work feels endless, no breaks, no pause. You stare outside, watching the sky ☁️, thinking about what could have been different.</p>
+          <p>I know how discouraging it can be when your birthday feels like every other day &mdash; or worse. You're at home when you wanted to be out. Work feels endless, no breaks, no pause. You stare outside, watching the sky ☁️, thinking about what could have been different.</p>
 
-        <p>You wanted to cut a cake 🎂. You wanted your hair done 💇🏾‍♀️. You wanted, just once, for something to feel different. But the day gets close, and then it's here, and somehow nothing shifts. Sometimes it even feels worse than an ordinary day — because you know it's supposed to be special, and there's little or no celebration to show for it.</p>
+          <p>You wanted to cut a cake 🎂. You wanted your hair done 💇🏾‍♀️. You wanted, just once, for something to feel different. But the day gets close, and then it's here, and somehow nothing shifts. Sometimes it even feels worse than an ordinary day &mdash; because you know it's supposed to be special, and there's little or no celebration to show for it.</p>
 
-        <p>I don't know if today will be different. I don't know if these words will change much of anything.</p>
+          <p>I don't know if today will be different. I don't know if these words will change much of anything.</p>
 
-        <p>But I know you can choose to be different today. You can laugh anyway 😂. You can choose peace anyway 🕊️. You can smile through it, not because everything is fine, but because you decide to. ✨</p>
+          <p>But I know you can choose to be different today. You can laugh anyway 😂. You can choose peace anyway 🕊️. You can smile through it, not because everything is fine, but because you decide to. ✨</p>
 
-        <p>I hope this reaches you, Victoria, and reminds you of something true:</p>
+          <p>I hope this reaches you, Victoria, and reminds you of something true:</p>
 
-        <div class="verse-card">
-          <p>&ldquo;Can a mother forget the baby at her breast and have no compassion on the child she has borne? Though she may forget, I will not forget you! See, I have engraved you on the palms of my hands.&rdquo;</p>
-          <cite>Isaiah 49:15–16 📖</cite>
+          <!-- Illuminated Scripture Capsule -->
+          <div class="verse-capsule">
+            <div class="verse-ambient-glow"></div>
+            <blockquote class="verse-quote">
+              <p>&ldquo;Can a mother forget the baby at her breast and have no compassion on the child she has borne? Though she may forget, I will not forget you! See, I have engraved you on the palms of my hands.&rdquo;</p>
+              <cite>Isaiah 49:15&ndash;16 📖</cite>
+            </blockquote>
+          </div>
+
+          <p>No matter how quiet today feels, you are not forgotten. 🤍</p>
+
+          <p class="birthday-wish">Happy birthday, Victoria. 🎉🤍</p>
+
+          <footer class="sheet-footer">
+            <p class="signoff-note">With you in this, always &mdash;</p>
+            <p class="signoff-name">Daniel</p>
+          </footer>
         </div>
-
-        <p>No matter how quiet today feels, you are not forgotten. 🤍</p>
-
-        <p>Happy birthday, Victoria. 🎉🤍</p>
-
-        <div class="signoff">
-          With you in this, always &mdash;<br>
-          <strong>Daniel</strong>
-        </div>
-      </div>
-    </article>
+      </article>
+    </main>
   </section>
 
-  <!-- Floating Audio Button -->
-  <div class="audio-bar" id="audioBtn" role="button" aria-label="Toggle audio playback">
-    <div class="audio-indicator">
-      <span></span><span></span><span></span>
+  <!-- ================= 3. FLOATING MUSIC CONTROLLER ================= -->
+  <button id="audioToggle" class="floating-audio-bar" type="button" aria-label="Toggle audio playback" style="display: none;">
+    <div class="audio-waves" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
     </div>
-    <span class="audio-label" id="audioText">Playing softly</span>
-  </div>
+    <span class="audio-status-text" id="audioStatus">Playing softly</span>
+  </button>
 
-  <script>
-    (function () {
-      "use strict";
-
-      /* ================= 1. LIVE CANVAS STARRY SPARKS ================= */
-      const canvas = document.getElementById("canvas-bg");
-      const ctx = canvas.getContext("2d");
-      let w, h;
-      const sparks = [];
-
-      function resize() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-      }
-      window.addEventListener("resize", resize);
-      resize();
-
-      class Spark {
-        constructor() { this.reset(true); }
-        reset(initial = false) {
-          this.x = Math.random() * w;
-          this.y = initial ? Math.random() * h : h + 10;
-          this.size = Math.random() * 2.2 + 0.8;
-          this.speedY = Math.random() * 0.5 + 0.25;
-          this.speedX = (Math.random() - 0.5) * 0.4;
-          this.alpha = Math.random() * 0.6 + 0.2;
-          this.pulse = Math.random() * 0.02 + 0.008;
-        }
-        update() {
-          this.y -= this.speedY;
-          this.x += this.speedX;
-          this.alpha += Math.sin(Date.now() * this.pulse) * 0.008;
-          if (this.y < -10 || this.x < -10 || this.x > w + 10) this.reset();
-        }
-        draw() {
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(247, 215, 140, ${Math.max(0.1, Math.min(0.85, this.alpha))})`;
-          ctx.shadowBlur = 8;
-          ctx.shadowColor = "#ffd97d";
-          ctx.fill();
-        }
-      }
-
-      for (let i = 0; i < 45; i++) sparks.push(new Spark());
-
-      function animate() {
-        ctx.clearRect(0, 0, w, h);
-        sparks.forEach(s => { s.update(); s.draw(); });
-        requestAnimationFrame(animate);
-      }
-      animate();
-
-      /* ================= 2. DRIFTING BALLOONS ================= */
-      const balloonColors = [
-        'radial-gradient(circle at 35% 30%, #ffd97d, #d98a3e)',
-        'radial-gradient(circle at 35% 30%, #ffc0cb, #c75b7a)',
-        'radial-gradient(circle at 35% 30%, #e0b0ff, #7852a9)',
-        'radial-gradient(circle at 35% 30%, #ffffff, #c2b69d)',
-        'radial-gradient(circle at 35% 30%, #f6c98d, #b97a46)'
-      ];
-
-      const balloonGroup = document.getElementById("balloonGroup");
-      function spawnBalloons() {
-        for (let i = 0; i < 7; i++) {
-          const b = document.createElement("div");
-          b.className = "balloon";
-          b.style.left = (Math.random() * 88 + 4) + "%";
-          b.style.background = balloonColors[i % balloonColors.length];
-          b.style.animationDuration = (14 + Math.random() * 10) + "s";
-          b.style.animationDelay = (i * 2.8) + "s";
-          balloonGroup.appendChild(b);
-        }
-      }
-      spawnBalloons();
-
-      /* ================= 3. SMOOTH EXPONENTIAL AUDIO FADES ================= */
-      const audio = document.getElementById("bgMusic");
-      let fadeTimer = null;
-
-      function smoothFade(targetVolume, durationMs, onComplete) {
-        clearInterval(fadeTimer);
-        const startVolume = audio.volume;
-        const diff = targetVolume - startVolume;
-        const steps = 30;
-        const interval = durationMs / steps;
-        let step = 0;
-
-        fadeTimer = setInterval(() => {
-          step++;
-          const progress = step / steps;
-          audio.volume = Math.max(0, Math.min(1, startVolume + diff * progress));
-          if (step >= steps) {
-            clearInterval(fadeTimer);
-            if (onComplete) onComplete();
-          }
-        }, interval);
-      }
-
-      /* ================= 4. CANDLE REVEAL & AUDIO START ================= */
-      const threshold = document.getElementById("threshold");
-      const letter = document.getElementById("letter");
-      const candle = document.getElementById("candleTrigger");
-      const audioBtn = document.getElementById("audioBtn");
-      const audioText = document.getElementById("audioText");
-      let hasLit = false;
-
-      candle.addEventListener("click", () => {
-        if (hasLit) return;
-        hasLit = true;
-
-        candle.classList.add("is-lit");
-
-        /* Audio starts at 0 and smoothly fades in over 4 seconds */
-        audio.volume = 0;
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => smoothFade(0.8, 4000))
-            .catch(() => { /* Continues visually if autoplay restricted */ });
-        }
-
-        setTimeout(() => {
-          threshold.classList.add("is-hidden");
-          letter.classList.add("is-visible");
-          audioBtn.classList.add("is-active");
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 1600);
-      });
-
-      /* ================= 5. AUDIO CONTROLS (FADE IN & OUT) ================= */
-      audioBtn.addEventListener("click", () => {
-        if (audio.paused) {
-          audio.play().then(() => {
-            smoothFade(0.8, 1200);
-            audioBtn.classList.remove("is-paused");
-            audioText.textContent = "Playing softly";
-          }).catch(() => {});
-        } else {
-          smoothFade(0, 1000, () => {
-            audio.pause();
-            audioBtn.classList.add("is-paused");
-            audioText.textContent = "Music paused";
-          });
-        }
-      });
-    })();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
